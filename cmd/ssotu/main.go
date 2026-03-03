@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+
 	"log/slog"
 	"os"
 
@@ -28,7 +28,7 @@ func main() {
 	log.Debug("debug message")
 
 	log.Error("error message")
-	
+
 	log.Warn("warn message")
 
 	// TODO: init logger
