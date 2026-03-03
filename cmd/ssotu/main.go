@@ -1,7 +1,8 @@
-package ssotu
+package main
 
 import (
 	"fmt"
+
 	"sso/internal/config"
 )
 
