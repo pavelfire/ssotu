@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"os"
 
+	appapp "sso/internal/app"
 	"sso/internal/config"
 )
 
@@ -19,6 +20,12 @@ func main() {
 	log := setupLogger(cfg.Env)
 
 	log.Info("starting application", slog.Any("cfg", cfg))
+
+	application := appapp.New(log, cfg.GRPC.Port, cfg.StoragePath, cfg.TokenTTL)
+
+	application.GRPCSrv.MustRun()
+
+	
 
 	// TODO: init logger
 
