@@ -6,7 +6,7 @@ import (
 	"net"
 
 	// "strconv"
-	authgrpc "ssotu/internal/grpc/auth"
+	authgrpc "sso/internal/grpc/auth"
 
 	"google.golang.org/grpc"
 )
