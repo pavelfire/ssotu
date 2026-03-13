@@ -19,6 +19,6 @@ type UserSaver interface {
 }
 
 type UserProvider interface {
-	User(ctx context.Context, email string) (user models.User, err error)
-	IsAdmin(ctx context.Context, userId int64) (isAdmin bool, err error)
+	User(ctx context.Context, email string) (models.User, error)
+	IsAdmin(ctx context.Context, userId int64) (bool, error)
 }
