@@ -4,6 +4,8 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"os"
+	"path/filepath"
 
 	// Библиотека для миграций
 	"github.com/golang-migrate/migrate/v4"
@@ -28,8 +30,25 @@ func main() {
 		panic("migrations path is required")
 	}
 
+	absMigrations, err := filepath.Abs(migrationsPath)
+	if err != nil {
+		panic(fmt.Sprintf("migrations path: %v", err))
+	}
+	if info, err := os.Stat(absMigrations); err != nil {
+		if os.IsNotExist(err) {
+			panic("migrations path does not exist: " + absMigrations)
+		}
+		panic(fmt.Sprintf("migrations path: %v", err))
+	} else if !info.IsDir() {
+		panic("migrations path is not a directory: " + absMigrations)
+	}
+	entries, _ := os.ReadDir(absMigrations)
+	if len(entries) == 0 {
+		panic("migrations directory is empty (add at least one migration file): " + absMigrations)
+	}
+
 	m, err := migrate.New(
-		"file://"+migrationsPath,
+		"file://"+filepath.ToSlash(absMigrations),
 		fmt.Sprintf("sqlite3://%s?x-migrations-table=%s", storagePath, migrationsTable),
 	)
 	if err != nil {
