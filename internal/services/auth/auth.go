@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"sso/internal/domain/models"
+	"sso/internal/lib/jwt"
 	"sso/internal/storage"
 	"time"
 
@@ -39,7 +40,7 @@ type AppProvider interface {
 	App(ctx context.Context, appId int) (models.App, error)
 }
 
-var(
+var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
 )
 
@@ -69,7 +70,7 @@ func (a *Auth) Login(
 	password string,
 	appId int,
 ) (string, error) {
-	const op  = "auth.Login"
+	const op = "auth.Login"
 
 	log := a.log.With(
 		slog.String("op", op),
@@ -87,7 +88,7 @@ func (a *Auth) Login(
 		a.log.Error("failed to get user", slog.String("error", err.Error()))
 		return "", status.Error(codes.Internal, "failed to get user")
 	}
-	
+
 	if err := bcrypt.CompareHashAndPassword(user.PassHash, []byte(password)); err != nil {
 		a.log.Error("invalid credentials", slog.String("error", err.Error()))
 		return "", fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
@@ -103,10 +104,14 @@ func (a *Auth) Login(
 		return "", status.Error(codes.Internal, "failed to get app")
 	}
 	log.Info("user logged in successfully")
-	
 
+	token, err := jwt.NewToken(user, app, a.tokenTTL)
+	if err != nil {
+		a.log.Error("failed to generate token", slog.String("error", err.Error()))
+		return "", fmt.Errorf("%s: %w", op, err)
+	}
 
-	// Check if user has access to the app
+	return token, nil
 }
 
 // RegisterNewUser registers a new user in the system and returns the user's ID
@@ -118,7 +123,7 @@ func (a *Auth) RegisterNewUser(
 	email string,
 	password string,
 ) (int64, error) {
-	const op  = "auth.RegisterNewUser"
+	const op = "auth.RegisterNewUser"
 
 	log := a.log.With(
 		slog.String("op", op),
@@ -151,5 +156,21 @@ func (a *Auth) IsAdmin(
 	ctx context.Context,
 	userId int64,
 ) (bool, error) {
-	panic("not implemented")
+	const op = "auth.IsAdmin"
+
+	log := a.log.With(
+		slog.String("op", op),
+	)
+
+	log.Info("checking if user is admin")
+
+	isAdmin, err := a.userProvider.IsAdmin(ctx, userId)
+	if err != nil {
+		log.Error("failed to check if user is admin", slog.String("error", err.Error()))
+		return false, status.Error(codes.Internal, "failed to check if user is admin")
+	}
+
+	log.Info("user is admin", slog.Bool("is_admin", isAdmin))
+
+	return isAdmin, nil
 }
