@@ -36,3 +36,5 @@ go get github.com/golang-jwt/jwt/v5
 go test ./internal/lib/jwt/... -v из каталога ssotu.
 
 go get github.com/golang-migrate/migrate/v4
+
+go run ./cmd/migrator --storage-path=./storage/sso.db --migrations-path=./migrations
