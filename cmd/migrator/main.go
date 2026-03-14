@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/golang-migrate/migrate"
+	"github.com/golang-migrate/migrate/v4"
 )
 
 func main() {
