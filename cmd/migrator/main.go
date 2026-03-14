@@ -5,7 +5,12 @@ import (
 	"flag"
 	"fmt"
 
+	// Библиотека для миграций
 	"github.com/golang-migrate/migrate/v4"
+	// Драйвер для выполнения миграций sqlite 3
+	_ "github.com/golang-migrate/migrate/v4/database/sqlite3"
+	// Lhfqdth lkzz gjkextybz vbuhfwbq bp afqkjd
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 func main() {
