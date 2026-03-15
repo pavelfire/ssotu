@@ -2,6 +2,9 @@ package auth
 
 import (
 	"context"
+	"errors"
+	"sso/internal/services/auth"
+	"sso/internal/storage"
 
 	ssov1 "github.com/pavelfire/protostu/gen/go/sso"
 	"google.golang.org/grpc"
@@ -46,10 +49,13 @@ func (s *serverAPI) Login(
 ) (*ssov1.LoginResponse, error) {
 	if err := validateLogin(req); err != nil {
 		return nil, err
-	}	
+	}
 
 	token, err := s.auth.Login(ctx, req.GetEmail(), req.GetPassword(), int(req.GetAppId()))
 	if err != nil {
+		if errors.Is(err, auth.ErrInvalidCredentials) {
+			return nil, status.Error(codes.Unauthenticated, "invalid credentials")
+		}
 		return nil, status.Error(codes.Internal, "failed to login")
 	}
 
@@ -68,6 +74,9 @@ func (s *serverAPI) Register(
 
 	userId, err := s.auth.RegisterNewUser(ctx, req.GetEmail(), req.GetPassword())
 	if err != nil {
+		if errors.Is(err, storage.ErrUserExists) {
+			return nil, status.Error(codes.AlreadyExists, "user already exists")
+		}
 		return nil, status.Error(codes.Internal, "failed to register user")
 	}
 	return &ssov1.RegisterResponse{UserId: userId}, nil
@@ -83,13 +92,16 @@ func (s *serverAPI) IsAdmin(
 
 	isAdmin, err := s.auth.IsAdmin(ctx, req.GetUserId())
 	if err != nil {
+		if errors.Is(err, storage.ErrUserNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
 		return nil, status.Error(codes.Internal, "failed to check if user is admin")
 	}
 	return &ssov1.IsAdminResponse{IsAdmin: isAdmin}, nil
 }
 
 func validateLogin(req *ssov1.LoginRequest) error {
-	if req.GetEmail() == ""{
+	if req.GetEmail() == "" {
 		return status.Error(codes.InvalidArgument, "email is required")
 	}
 	if req.GetPassword() == "" {
