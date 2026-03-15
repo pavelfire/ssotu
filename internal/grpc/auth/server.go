@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"go/token"
 
 	ssov1 "github.com/pavelfire/protostu/gen/go/sso"
 	"google.golang.org/grpc"
