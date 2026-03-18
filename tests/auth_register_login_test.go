@@ -6,10 +6,11 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit/v6"
-	"github.com/golang-jwt/jwt"
-	ssov1 "github.com/pavelfire/protostu/gen/go/sso"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	ssov1 "github.com/pavelfire/protostu/gen/go/sso"
 )
 
 const (
