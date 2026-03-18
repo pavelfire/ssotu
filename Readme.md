@@ -46,3 +46,7 @@ go get github.com/brianvoe/gofakeit/v6
 
 go get github.com/stretchr/testify
 
+cd ssotu && go mod tidy
+
+точечный вариант cd ssotu && go get github.com/stretchr/testify/assert@v1.11.1
+
