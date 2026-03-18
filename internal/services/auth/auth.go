@@ -143,6 +143,9 @@ func (a *Auth) RegisterNewUser(
 	userId, err := a.userSaver.SaveUser(ctx, email, passHash)
 	if err != nil {
 		log.Error("failed to save user", slog.String("error", err.Error()))
+		if errors.Is(err, storage.ErrUserExists) {
+			return 0, fmt.Errorf("%s: %w", op, err)
+		}
 		return 0, status.Error(codes.Internal, "failed to save user")
 	}
 
