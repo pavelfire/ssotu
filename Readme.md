@@ -50,3 +50,5 @@ cd ssotu && go mod tidy
 
 точечный вариант cd ssotu && go get github.com/stretchr/testify/assert@v1.11.1
 
+применяем тестовые миграции
+go run ./cmd/migrator --storage-path=./storage/sso.db --migrations-path=./tests/migrations --migrations-table=migrations_test
