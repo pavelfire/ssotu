@@ -3,6 +3,7 @@ package tests
 import (
 	"sso/tests/suite"
 	"testing"
+	"time"
 
 	"github.com/brianvoe/gofakeit/v6"
 	"github.com/golang-jwt/jwt"
@@ -37,6 +38,8 @@ func TestAuthRegisterLogin(t *testing.T) {
 	})
 	require.NoError(t, err)
 
+	loginTime := time.Now()
+
 	token := respLogin.GetToken()
 	assert.NotEmpty(t, token)
 
@@ -49,9 +52,13 @@ func TestAuthRegisterLogin(t *testing.T) {
 	claims, ok := tokenParsed.Claims.(jwt.MapClaims)
 	assert.True(t, ok)
 
+	assert.Equal(t, respReg.GetUserId(), int64(claims["uid"].(float64)))
 	assert.Equal(t, email, claims["email"].(string))
-	assert.
+	assert.Equal(t, appId, int(claims["app_id"].(float64)))
 
+	const deltaSeconds = 1
+
+	assert.InDelta(t, loginTime.Add(st.Cfg.TokenTTL).Unix(), claims["exp"].(float64), deltaSeconds)
 }
 
 func randomFakePassword() string {
