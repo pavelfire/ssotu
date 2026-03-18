@@ -144,7 +144,9 @@ func (a *Auth) RegisterNewUser(
 	if err != nil {
 		log.Error("failed to save user", slog.String("error", err.Error()))
 		if errors.Is(err, storage.ErrUserExists) {
-			return 0, fmt.Errorf("%s: %w", op, err)
+			// Map storage-level uniqueness error to auth-level sentinel,
+			// so the gRPC layer can reliably match it with errors.Is.
+			return 0, fmt.Errorf("%s: %w", op, ErrUserExists)
 		}
 		return 0, status.Error(codes.Internal, "failed to save user")
 	}
