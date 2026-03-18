@@ -42,6 +42,9 @@ type AppProvider interface {
 
 var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
+	ErrUserExists         = errors.New("user already exists")
+	ErrUserNotFound       = errors.New("user not found")
+	ErrInvalidAppId       = errors.New("invalid app id")
 )
 
 // New returns a new instance of the Auth service

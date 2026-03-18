@@ -62,6 +62,29 @@ func TestAuthRegisterLogin(t *testing.T) {
 	assert.InDelta(t, loginTime.Add(st.Cfg.TokenTTL).Unix(), claims["exp"].(float64), deltaSeconds)
 }
 
+
+func TestAuthRegisterLoginDublicateRegistration(t *testing.T) {
+	ctx, st := suite.New(t)
+	email := gofakeit.Email()
+	password := randomFakePassword()
+
+	respReg, err := st.AuthClient.Register(ctx, &ssov1.RegisterRequest{
+		Email:    email,
+		Password: password,
+	})
+	require.NoError(t, err)
+	assert.NotEmpty(t, respReg.GetUserId())
+
+	respReg, err = st.AuthClient.Register(ctx, &ssov1.RegisterRequest{
+		Email:    email,
+		Password: password,
+	})
+	require.Error(t, err)
+	assert.Empty(t, respReg.GetUserId())
+
+	assert.ErrorContains(t,err, "user already exists")
+}
+
 func randomFakePassword() string {
 	return gofakeit.Password(true, true, true, true, true, passDefaultLen)
 }
