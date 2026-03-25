@@ -25,7 +25,10 @@ func New(
 ) (*Client, error) {
 	const op = "clients.sso.grpc.New"
 
-	conn, err := grpc.DialContext(ctx, addr,
+	if err := ctx.Err(); err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	conn, err := grpc.NewClient(addr,
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
