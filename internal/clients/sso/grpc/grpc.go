@@ -28,13 +28,13 @@ func New(
 ) (*Client, error) {
 	const op = "clients.sso.grpc.New"
 
-	retryOpts:=[]grpcretry.CallOption{
+	retryOpts := []grpcretry.CallOption{
 		grpcretry.WithCodes(codes.NotFound, codes.Aborted, codes.DeadlineExceeded),
 		grpcretry.WithMax(uint(retriesCount)),
 		grpcretry.WithPerRetryTimeout(timeout),
 	}
 
-	logOpts:=[]grpclog.Option{
+	logOpts := []grpclog.Option{
 		grpclog.WithLogOnEvents(grpclog.PayloadReceived, grpclog.PayloadSent),
 	}
 
@@ -55,6 +55,7 @@ func New(
 	}, nil
 }
 
+// InterceptorLogger is a helper function to create a grpc logger interceptor
 func InterceptorLogger(log *slog.Logger) grpclog.Logger {
 	return grpclog.LoggerFunc(func(ctx context.Context, lvl grpclog.Level, msg string, fields ...any) {
 		log.Log(ctx, slog.Level(lvl), msg, fields...)
