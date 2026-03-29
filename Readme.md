@@ -52,3 +52,8 @@ cd ssotu && go mod tidy
 
 применяем тестовые миграции
 go run ./cmd/migrator --storage-path=./storage/sso.db --migrations-path=./tests/migrations --migrations-table=migrations_test
+
+cd ssotu
+go get github.com/grpc-ecosystem/go-grpc-middleware/v2
+
+
