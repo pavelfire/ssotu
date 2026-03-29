@@ -42,11 +42,12 @@ func New(
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	conn, err := grpc.NewClient(addr,
-		grpc.WithTransportCredentials(insecure.NewCredentials())),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithChainUnaryInterceptor(
 			grpclog.UnaryClientInterceptor(InterceptorLogger(log), logOpts...),
 			grpcretry.UnaryClientInterceptor(retryOpts...),
-		)
+		),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
