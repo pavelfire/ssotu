@@ -57,6 +57,8 @@ cd ssotu
 go get github.com/grpc-ecosystem/go-grpc-middleware/v2
 
 github repository -> settings -> Secrets and variables -> Actions
+and set there DEPLOY_SSH_KEY private server key
 
-
+git tag v0.0.1
+git push origin v0.0.1
 
