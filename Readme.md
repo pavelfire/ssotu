@@ -56,4 +56,7 @@ go run ./cmd/migrator --storage-path=./storage/sso.db --migrations-path=./tests/
 cd ssotu
 go get github.com/grpc-ecosystem/go-grpc-middleware/v2
 
+github repository -> settings -> Secrets and variables -> Actions
+
+
 

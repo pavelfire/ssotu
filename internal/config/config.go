@@ -14,7 +14,7 @@ type Config struct {
 	TokenTTL    time.Duration `yaml:"token_ttl" env-default:"1h"`
 	GRPC        GRPCCongig    `yaml:"grpc"`
 	HTTPServer  HTTPConfig    `yaml:"http_server"`
-	Clients     ClientConfig  `yaml:"clients"`
+	Clients     ClientsConfig `yaml:"clients"`
 	AppSecret   string        `yaml:"app_secret" env-required:"true" env:"APP_SECRET"`
 }
 
@@ -32,7 +32,7 @@ type Client struct {
 	RetriesCount int           `yaml:"retriesCount"`
 }
 
-type ClientConfig struct {
+type ClientsConfig struct {
 	SSO Client `yaml:"sso"`
 }
 
