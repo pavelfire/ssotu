@@ -36,6 +36,9 @@ jobs:
         run: |
           go mod download
           go build -o grpc-auth ./cmd/ssotu
+      - name: Build migrator
+        run: |
+          go build -o migrator ./cmd/migrator
       - name: Deploy to VM
         run: |
           sudo apt-get install -y ssh rsync
